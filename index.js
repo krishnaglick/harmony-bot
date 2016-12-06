@@ -12,7 +12,8 @@ let client;
 })();
 
 fs.watch('./app', { persistent: true, recursive: true }, async (eventType, fileName) => {
-  delete require.cache[`${appDir}/${fileName}`];
+  if(fileName !== 'config.json')
+    delete require.cache[`${appDir}/${fileName}`];
   try {
     const app = require('./app/app');
     await app.stop(client);
