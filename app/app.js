@@ -22,9 +22,9 @@ exports.start = async function(client, config) {
   client.on('message', (message) => {
     if(!message)
       return console.log('No message!');
-    if (message.content === 'ping') {
+    /*if (message.content === 'ping') {
       message.reply('pong');
-    }
+    }*///Leaving this in for later interaction potentially
   });
 
   client.on('presenceUpdate', async (old, neu) => {
