@@ -1,7 +1,7 @@
 
 const snowflakes = {
   LordMistborn: `We trade one Lord Ruler for another <@id>`,
-  eviljer: `Welcome <@id>, you have a hard road in front of you.`
+  eviljer: `Hello <@id>, would you like to destroy some evil today?`
 };
 
 module.exports = function(user) {

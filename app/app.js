@@ -1,13 +1,11 @@
 
 const Discord = require('discord.js');
-const welcomeMessages = require('./welcomeMessages');
-const snowflakes = require('./snowflakes');
-const config = require('../config');
 
 let names = {};
 let defaultChannel;
 
 const getWelcomeMessage = function() {
+  const welcomeMessages = require('./welcomeMessages');
   const index = Math.floor(Math.random() * (welcomeMessages.length - 0) + 0);
   return welcomeMessages[index];
 };
@@ -23,15 +21,35 @@ exports.start = async function(client) {
     }
   });
 
-  client.on('message', (message) => {
-    if(!message)
-      return console.log('No message!');
-    /*if (message.content === 'ping') {
-      message.reply('pong');
-    }*///Leaving this in for later interaction potentially
+  client.on('message', async (message) => {
+    const wiki = require('./wiki');
+    try {
+      if(!message)
+        return console.log('No message!');
+      if(message.author.bot || message.content.indexOf('!wiki') === -1)
+        return;
+/*      if(message.channel.name === 'no_spoilers')
+        return message.reply(`Sorry, I can't reply in the no_spoilers channel.`);*/
+      const searchTerms = /!wiki (.*)/gi.exec(message.content);
+      if(searchTerms && searchTerms.length > 1 && searchTerms[1]) {
+        const searchTerm = await wiki.search(searchTerms[1]);
+        const wikiData = await wiki.findPage(searchTerm);
+        /*const summary = await wikiData.summary();
+        console.log(await wikiData.content());
+        const conciseSummary = summary.split(' ').slice(0, 50).join(' ');*/
+        const url = wikiData.raw.fullurl;
+        //const botMessage = `${conciseSummary}...\nRead more here: <${url}>`;
+        const botMessage = `Read up on ${searchTerm} here! <${url}>`;
+        message.reply(botMessage);
+      }
+    }
+    catch(x) {
+      console.error(x);
+    }
   });
 
   client.on('presenceUpdate', async (old, neu) => {
+    const snowflakes = require('./snowflakes');
     const { id, username } = neu.user;
     if(old.presence.status === 'offline' && neu.presence.status === 'online') {
       if(!snowflakes(neu.user)) {
@@ -52,6 +70,7 @@ exports.start = async function(client) {
   });
 
   try {
+    const config = require('../config');
     await client.login(process.env.CLIENT_SECRET || config.clientSecret);
   }
   catch(x) {
@@ -63,7 +82,7 @@ setInterval(async () => {
   const keys = Object.keys(names);
   if(keys.length > 0) {
     try {
-      const message = getWelcomeMessage().replace('<names>', keys.map(id => `<@${id}>`).join(', '));
+      const message = getWelcomeMessage().replace('<names>', keys.map(key => names[key]).join(', '));
       await defaultChannel.sendMessage(message);
       names = {};
     }
@@ -71,7 +90,7 @@ setInterval(async () => {
       console.error(x);
     }
   }
-}, 60000);
+}, 120000);
 
 exports.stop = async function(client) {
   console.log(`[${new Date().toTimeString()}] Bot Off`);
