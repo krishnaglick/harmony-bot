@@ -2,14 +2,13 @@
 const fs = require('fs');
 const path = require('path');
 const appDir = path.resolve('./app');
-const config = require('./config');
 
 let client;
 
 (async () => {
   const app = require('./app/app');
   client = await app.init();
-  await app.start(client, config);
+  await app.start(client);
 })();
 
 fs.watch('./app', { persistent: true, recursive: true }, async (eventType, fileName) => {
@@ -18,7 +17,7 @@ fs.watch('./app', { persistent: true, recursive: true }, async (eventType, fileN
     const app = require('./app/app');
     await app.stop(client);
     client = await app.init();
-    await app.start(client, config);
+    await app.start(client);
   }
   catch(x) {
     console.error(x);
