@@ -28,8 +28,8 @@ exports.start = async function(client, firebaseStore) {
     try {
       if(!message)
         return console.log('No message!');
-      if(message.author.id === '209703838117003264')
-        message.reply(message.content.split('!say')[1] || 'Follow the Path');
+      if(message.author.id === '209703838117003264' && message.content.indexOf('!say') > -1)
+        return message.reply(message.content.split('!say')[1] || 'Follow the Path');
       if(message.author.bot || message.content.indexOf('!wiki') === -1)
         return;
       if(message.channel.name === 'no_spoilers')
