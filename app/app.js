@@ -28,18 +28,14 @@ exports.start = async function(client) {
         return console.log('No message!');
       if(message.author.bot || message.content.indexOf('!wiki') === -1)
         return;
-/*      if(message.channel.name === 'no_spoilers')
-        return message.reply(`Sorry, I can't reply in the no_spoilers channel.`);*/
+      if(message.channel.name === 'no_spoilers')
+        return message.reply(`Sorry, I can't reply in the no_spoilers channel.`);
       const searchTerms = /!wiki (.*)/gi.exec(message.content);
       if(searchTerms && searchTerms.length > 1 && searchTerms[1]) {
         const searchTerm = await wiki.search(searchTerms[1]);
         const wikiData = await wiki.findPage(searchTerm);
-        /*const summary = await wikiData.summary();
-        console.log(await wikiData.content());
-        const conciseSummary = summary.split(' ').slice(0, 50).join(' ');*/
         const url = wikiData.raw.fullurl;
-        //const botMessage = `${conciseSummary}...\nRead more here: <${url}>`;
-        const botMessage = `Read up on ${searchTerm} here! <${url}>`;
+        const botMessage = `Read up on ${searchTerm} here! ${url}`;
         message.reply(botMessage);
       }
     }

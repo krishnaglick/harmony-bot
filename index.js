@@ -11,16 +11,18 @@ let client;
   await app.start(client);
 })();
 
-fs.watch('./app', { persistent: true, recursive: true }, async (eventType, fileName) => {
-  if(fileName !== 'config.json')
-    delete require.cache[`${appDir}/${fileName}`];
-  try {
-    const app = require('./app/app');
-    await app.stop(client);
-    client = await app.init();
-    await app.start(client);
-  }
-  catch(x) {
-    console.error(x);
-  }
-});
+if(process.env.NODE_ENV !== 'production') {
+  fs.watch('./app', { persistent: true, recursive: true }, async (eventType, fileName) => {
+    if(fileName !== 'config.json')
+      delete require.cache[`${appDir}/${fileName}`];
+    try {
+      const app = require('./app/app');
+      await app.stop(client);
+      client = await app.init();
+      await app.start(client);
+    }
+    catch(x) {
+      console.error(x);
+    }
+  });
+}
