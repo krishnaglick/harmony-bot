@@ -6,5 +6,6 @@ deployment:
   push_to_server:
     branch: master
     commands:
+      - chmod 777 pullCode.sh
       - ./pullCode.sh
 
