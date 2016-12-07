@@ -53,6 +53,8 @@ exports.start = async function(client, firebaseStore) {
   });
 
   client.on('presenceUpdate', async (old, neu) => {
+    if(old.presence.status !== 'offline' || neu.presence.status !== 'online')
+      return;
     const snowflakes = require('./snowflakes');
     const { id, username } = neu.user;
     let haveUser;
@@ -63,9 +65,14 @@ exports.start = async function(client, firebaseStore) {
       console.warn(x);
     }
     if(!haveUser.val()) {
-      fbStore.database().ref(`${id}`).set({
-        id: username
-      });
+      try {
+        await fbStore.database().ref(`${id}`).set({
+          id: username
+        });
+      }
+      catch(x) {
+        console.error(x);
+      }
       if(old.presence.status === 'offline' && neu.presence.status === 'online') {
         if(!snowflakes(neu.user)) {
           if(!names[id])
