@@ -1,8 +1,0 @@
-image: node:7.2.0
-
-services:
-  - postgres:9.5.0
-
-all_tests:
-  script:
-   - npm install
