@@ -1,8 +1,9 @@
 
-const Discord = require('discord.js');
+const discord = require('discord.js');
 
 let names = {};
 let defaultChannel;
+let fbStore;
 
 const getWelcomeMessage = function() {
   const welcomeMessages = require('./welcomeMessages');
@@ -10,7 +11,8 @@ const getWelcomeMessage = function() {
   return welcomeMessages[index];
 };
 
-exports.start = async function(client) {
+exports.start = async function(client, firebaseStore) {
+  fbStore = firebaseStore;
   client.on('ready', async () => {
     console.log(`[${new Date().toTimeString()}] Bot On`);
     try {
@@ -53,20 +55,32 @@ exports.start = async function(client) {
   client.on('presenceUpdate', async (old, neu) => {
     const snowflakes = require('./snowflakes');
     const { id, username } = neu.user;
-    if(old.presence.status === 'offline' && neu.presence.status === 'online') {
-      if(!snowflakes(neu.user)) {
-        if(!names[id])
-          names[id] = username;
-        if(!defaultChannel)
-          defaultChannel = neu.guild.defaultChannel;
-      }
-      try {
-        const message = snowflakes(neu.user);
-        if(message)
-          await neu.guild.defaultChannel.sendMessage(message);
-      }
-      catch(x) {
-        console.error(x);
+    let haveUser;
+    try {
+      haveUser = await fbStore.database().ref(`${id}`).once('value');
+    }
+    catch(x) {
+      console.warn(x);
+    }
+    if(!haveUser.val()) {
+      fbStore.database().ref(`${id}`).set({
+        id: username
+      });
+      if(old.presence.status === 'offline' && neu.presence.status === 'online') {
+        if(!snowflakes(neu.user)) {
+          if(!names[id])
+            names[id] = username;
+          if(!defaultChannel)
+            defaultChannel = neu.guild.defaultChannel;
+        }
+        try {
+          const message = snowflakes(neu.user);
+          if(message)
+            await neu.guild.defaultChannel.sendMessage(message);
+        }
+        catch(x) {
+          console.error(x);
+        }
       }
     }
   });
@@ -95,7 +109,7 @@ setInterval(async () => {
   const keys = Object.keys(names);
   if(keys.length > 0) {
     try {
-      const message = getWelcomeMessage().replace('<names>', keys.map(key => names[key]).join(', '));
+      const message = getWelcomeMessage().replace('<names>', keys.map(key => `<@${key}>`).join(', '));
       await defaultChannel.sendMessage(message);
       names = {};
     }
@@ -116,5 +130,5 @@ exports.stop = async function(client) {
 };
 
 exports.init = async function() {
-  return new Discord.Client();
+  return new discord.Client();
 };
