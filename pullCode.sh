@@ -3,5 +3,6 @@ cd ~/harmony-bot
 git pull origin-ssh master
 nvm install 7.2.0
 nvm use 7.2.0
+npm i -g pm2
 npm run prod
 ENDSSH
