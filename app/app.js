@@ -30,6 +30,10 @@ exports.start = async function(client) {
         return;
       if(message.channel.name === 'no_spoilers')
         return message.reply(`Sorry, I can't reply in the no_spoilers channel.`);
+      if(process.env.NODE_ENV !== 'production' && message.channel.name !== 'bot-testing')
+        return;
+      if(process.env.NODE_ENV === 'production' && message.channel.name === 'bot-testing')
+        return;
       const searchTerms = /!wiki (.*)/gi.exec(message.content);
       if(searchTerms && searchTerms.length > 1 && searchTerms[1]) {
         const searchTerm = await wiki.search(searchTerms[1]);
@@ -55,7 +59,7 @@ exports.start = async function(client) {
           defaultChannel = neu.guild.defaultChannel;
       }
       try {
-        const message = snowflakes(neu.user);// || `${getWelcomeMessage().replace('id', id)}`;
+        const message = snowflakes(neu.user);
         if(message)
           await neu.guild.defaultChannel.sendMessage(message);
       }
