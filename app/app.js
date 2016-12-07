@@ -37,6 +37,8 @@ exports.start = async function(client) {
       const searchTerms = /!wiki (.*)/gi.exec(message.content);
       if(searchTerms && searchTerms.length > 1 && searchTerms[1]) {
         const searchTerm = await wiki.search(searchTerms[1]);
+        if(!searchTerm)
+          return message.reply(`Sorry, I couldn't find anything about that in my copperminds.`);
         const wikiData = await wiki.findPage(searchTerm);
         const url = wikiData.raw.fullurl;
         const botMessage = `Read up on ${searchTerm} here! ${url}`;
