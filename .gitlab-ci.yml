@@ -1,2 +1,9 @@
-before_script:
-  - apt-get update -qq && apt-get install -y -qq nodejs
+image: node:7.2.0
+
+services:
+  - postgres:9.5.0
+
+all_tests:
+  script:
+   - npm install
+   - node ./specs/start.js
