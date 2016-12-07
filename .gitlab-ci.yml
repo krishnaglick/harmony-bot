@@ -6,4 +6,3 @@ services:
 all_tests:
   script:
    - npm install
-   - node ./specs/start.js
