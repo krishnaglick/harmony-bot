@@ -6,5 +6,5 @@ deployment:
   push_to_server:
     branch: master
     commands:
-      - node -v
+      - ./pullCode.sh
 

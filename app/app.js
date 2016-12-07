@@ -66,8 +66,19 @@ exports.start = async function(client) {
   });
 
   try {
-    const config = require('../config');
-    await client.login(process.env.CLIENT_SECRET || config.clientSecret);
+    let config = {};
+    try {
+      config = require('../config');
+    }
+    catch(x) {
+      console.warn('No config file, I hope your env is set!');
+    }
+    const secret = process.env.CLIENT_SECRET || config.clientSecret;
+    if(!secret) {
+      console.error('Need a secret for harmony-bot!');
+      process.exit(1);
+    }
+    await client.login(secret);
   }
   catch(x) {
     console.error(x);
