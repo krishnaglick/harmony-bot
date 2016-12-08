@@ -10,7 +10,15 @@ const fbStore = firebase.initializeApp({
   messagingSenderId: "431219249221"
 });
 const mongoose = require('mongoose');
-mongoose.connect(`mongodb://mongo:27017`);
+mongoose.Promise = require('bluebird');
+(async () => {
+  try {
+    await mongoose.connect(`mongodb://mongo:27017`);
+  }
+  catch(x) {
+    console.error(`Mongoose can't connect\n`, x);
+  }
+})();
 
 let clientSecret;
 try {
