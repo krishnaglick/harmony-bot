@@ -9,6 +9,8 @@ const fbStore = firebase.initializeApp({
   storageBucket: "harmony-bot-503fb.appspot.com",
   messagingSenderId: "431219249221"
 });
+const mongoose = require('mongoose');
+mongoose.connect(`mongodb://mongo:27017`);
 
 let clientSecret;
 try {
@@ -21,7 +23,7 @@ if(!clientSecret)
   throw 'You need a client secret!';
 
 const harmonyBot = require('./app/harmony-bot');
-let client = new harmonyBot(fbStore, clientSecret);
+let client = new harmonyBot(fbStore, clientSecret, mongoose);
 client.start();
 
 if(process.env.NODE_ENV !== 'production') {
@@ -30,7 +32,7 @@ if(process.env.NODE_ENV !== 'production') {
       await client.stop();
       delete require.cache[path.resolve(fileName)];
       const harmonyBot = require('./app/harmony-bot');
-      client = new harmonyBot(fbStore, clientSecret);
+      client = new harmonyBot(fbStore, clientSecret, mongoose);
       await client.start();
     }
     catch(x) {

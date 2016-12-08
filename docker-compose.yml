@@ -1,0 +1,14 @@
+version: "2"
+services:
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+  harmony:
+    working_dir: /harmony-bot
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: harmony-bot
+    links:
+      - mongo
