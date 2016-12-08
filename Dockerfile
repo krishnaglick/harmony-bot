@@ -6,7 +6,8 @@ WORKDIR /harmony-bot
 ADD ./ /harmony-bot
 
 # Install Dependencies
-RUN npm i -g yarn pm2 && \
-    yarn
+RUN npm i -g pm2
+RUN npm i -g yarn
+RUN yarn
 
 CMD ["npm", "run", "prod"]
