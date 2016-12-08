@@ -11,9 +11,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^3.4.6",
     "discord.js": "^10.0.1",
     "firebase": "^3.6.3",
     "global": "^4.3.1",
+    "globby": "^6.1.0",
+    "lodash": "^4.17.2",
     "pm2": "^2.1.6",
     "wikijs": "^1.1.1"
   },

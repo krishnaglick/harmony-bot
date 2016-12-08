@@ -1,7 +1,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const appDir = path.resolve('./app');
 const firebase = require('firebase');
 const fbStore = firebase.initializeApp({
   apiKey: "AIzaSyCavaaJCMRP8TVgMLfui5PHK79bGDMjnoU",
@@ -11,23 +10,28 @@ const fbStore = firebase.initializeApp({
   messagingSenderId: "431219249221"
 });
 
-let client;
+let clientSecret;
+try {
+  clientSecret = require('./config').clientSecret;
+}
+catch(x) {
+  clientSecret = process.env.CLIENT_SECRET;
+}
+if(!clientSecret)
+  throw 'You need a client secret!';
 
-(async () => {
-  const app = require('./app/app');
-  client = await app.init();
-  await app.start(client, fbStore);
-})();
+const harmonyBot = require('./app/harmony-bot');
+let client = new harmonyBot(fbStore, clientSecret);
+client.start();
 
 if(process.env.NODE_ENV !== 'production') {
   fs.watch('./app', { persistent: true, recursive: true }, async (eventType, fileName) => {
-    if(fileName !== 'config.json')
-      delete require.cache[`${appDir}/${fileName}`];
     try {
-      const app = require('./app/app');
-      await app.stop(client);
-      client = await app.init();
-      await app.start(client, fbStore);
+      await client.stop();
+      delete require.cache[path.resolve(fileName)];
+      const harmonyBot = require('./app/harmony-bot');
+      client = new harmonyBot(fbStore, clientSecret);
+      await client.start();
     }
     catch(x) {
       console.error(x);
