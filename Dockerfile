@@ -7,7 +7,6 @@ ADD ./ /harmony-bot
 
 # Install Dependencies
 RUN npm i -g yarn pm2 && \
-    cd /harmony-bot && \
     yarn
 
 CMD ["npm", "run", "prod"]
