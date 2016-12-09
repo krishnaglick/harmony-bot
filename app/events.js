@@ -19,8 +19,6 @@ exports.message = async function(message) {
     return;
   if(process.env.NODE_ENV !== 'production' && message.channel.name !== 'bot-testing')
     return;
-  if(process.env.NODE_ENV === 'production' && message.channel.name === 'bot-testing')
-    return;
 
   const messageHandlerPaths = await globby(path.resolve('./app/messageHandlers/*.js'));
   _.forEach(messageHandlerPaths, async (messageHandlerPath) => {

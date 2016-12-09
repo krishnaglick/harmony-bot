@@ -7,7 +7,7 @@
     "test": "node -v",
     "start": "node --harmony-async-await index.js",
     "prod": "pm2-docker start pm2.json",
-    "build": "docker build -t harmony-bot:$(date +%Y-%m-%d-%m-%s) ."
+    "build": "docker-compose build"
   },
   "author": "",
   "license": "ISC",
