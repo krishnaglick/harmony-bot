@@ -1,6 +1,5 @@
 
 const wikiLib = require('wikijs').default;
-//const wiki = wikiLib({ apiUrl: 'http://coppermind.net/w/api.php' });
 
 class wiki {
   constructor(wikiUrl) {

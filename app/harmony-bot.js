@@ -30,7 +30,7 @@ class bot {
       await this.client.destroy();
     }
     catch(x) {
-      //console.error(`Can't destroy client\n`, x);
+      console.error(`Can't destroy client`);
     }
   }
 }
