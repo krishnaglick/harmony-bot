@@ -6,7 +6,14 @@ class bot {
   constructor(secret, mongoose) {
     this.client = new discord.Client();
     this.secret = secret;
-    this.mongoose = mongoose;
+    if(mongoose) {
+      this.mongoose = mongoose;
+      const schema = new this.mongoose.Schema({
+        id: String,
+        username: String
+      });
+      this.user = this.mongoose.model('user', schema);
+    }
   }
 
   async start() {
