@@ -39,4 +39,8 @@ exports.checks = [
 
 exports.requirements = [];
 
-exports.helpMessage = 'Using this command makes me search my copperminds for the required information.';
+exports.helpMessage = _.trim(`
+Using this command makes me search my copperminds for the requested information.
+\`!wiki\` to use it
+For example: \`!wiki kaladin\`
+`);

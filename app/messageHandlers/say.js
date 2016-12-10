@@ -25,4 +25,8 @@ exports.requirements = [
   (message) => message.member.permissions.hasPermission('MANAGE_CHANNELS')
 ];
 
-exports.helpMessage = 'This makes me talk, if you require such frivolity.';
+exports.helpMessage = _.trim(`
+This makes me talk, if you require such frivolity.
+\`!say\` activates the command
+\`!say [channel_name]\` will send the message to the specified channel
+`);
