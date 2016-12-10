@@ -3,9 +3,8 @@ const discord = require('discord.js');
 const _ = require('lodash');
 
 class bot {
-  constructor(firebaseStore, secret, mongoose) {
+  constructor(secret, mongoose) {
     this.client = new discord.Client();
-    this.firebaseStore = firebaseStore;
     this.secret = secret;
     this.mongoose = mongoose;
   }

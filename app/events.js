@@ -14,16 +14,22 @@ exports.ready = async function() {
 };
 
 exports.message = async function(message) {
-  //TODO: Are safeties better placed elsewhere?
   if(!message || message.author.bot)
     return;
   if(process.env.NODE_ENV !== 'production' && message.channel.name !== 'bot-testing')
     return;
 
-  const messageHandlerPaths = await globby(path.resolve('./app/messageHandlers/*.js'));
-  _.forEach(messageHandlerPaths, async (messageHandlerPath) => {
+  const permissions = await require('./permissions')(message);
+  const messageHandlerPaths = _.map(await globby('./app/messageHandlers/*.js'), p => path.resolve(p));
+  _.forEach(messageHandlerPaths, async (handlerPath) => {
     try {
-      require(messageHandlerPath)(message);
+      const handlerName = handlerPath.split(path.sep).slice(-1)[0].split('.')[0];
+      const { handler, checks } = require(handlerPath);
+      const hasPermission = permissions.indexOf(handlerName) > -1;
+      const checksPassed = _.reduce(_.map(checks, c => c(message), (a, b) => a && b));
+      if(hasPermission && checksPassed) {
+        await handler(message, permissions);
+      }
     }
     catch(x) {
       console.error(x);
@@ -31,8 +37,8 @@ exports.message = async function(message) {
   });
 };
 
-exports.presenceUpdate = async function(oldUser, newUser) {
-/*  //I need a refactor. Might not be necessary even!
+/*exports.presenceUpdate = async function(oldUser, newUser) {
+  //I need a refactor. Might not be necessary even!
   if(oldUser.presence.status !== 'offline' || newUser.presence.status !== 'online')
     return;
   const snowflakes = require('./snowflakes');
@@ -69,5 +75,5 @@ exports.presenceUpdate = async function(oldUser, newUser) {
         console.error(x);
       }
     }
-  }*/
-};
+  }
+};*/

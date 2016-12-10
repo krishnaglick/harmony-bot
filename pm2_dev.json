@@ -1,0 +1,18 @@
+{
+  "apps" : [{
+    "name"        : "harmony-bot",
+    "script"      : "index.js",
+    "args"        : [],
+    "node_args"   : "--harmony-async-await",
+    "merge_logs"  : true,
+    "cwd"         : "./",
+    "env": {
+        "NODE_ENV": "dev"
+    },
+    "watch": true,
+    "ignore_watch" : ["node_modules"],
+    "watch_options": {
+      "followSymlinks": false
+    }
+  }]
+}
