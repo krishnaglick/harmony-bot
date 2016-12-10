@@ -20,26 +20,20 @@ exports.message = async function(message) {
     return;
 
   const permissions = await require('./permissions')(message);
-  const messageHandlerPaths = _.map(await globby('./app/messageHandlers/*.js'), p => path.resolve(p));
-  const sortedHandlerPaths = _.sortBy(messageHandlerPaths, (path) => {
-    return ~path.indexOf('help');
-  });
-  for(let i = 0; i < sortedHandlerPaths.length - 1; i++) {
-    try {
-      const handlerName = sortedHandlerPaths[i].split(path.sep).slice(-1)[0].split('.')[0];
-      const { handler, checks } = require(sortedHandlerPaths[i]);
-      const hasPermission = permissions.indexOf(handlerName) > -1;
-      const checksPassed = _.reduce(_.map(checks, c => c(message), (a, b) => a && b));
-      if(hasPermission && checksPassed) {
-        return await handler(message, permissions);
-      }
-    }
-    catch(x) {
-      console.error(x);
+  const handlerPaths = _.map(await globby('./app/messageHandlers/*.js'), p => path.resolve(p));
+  const command = message.content.split(' ')[0].split('!')[1];
+  const [ handlerPath ] = _.filter(handlerPaths, p => p.indexOf(command) > -1);
+  if(handlerPath) {
+    const { handler, checks } = require(handlerPath);
+    const hasPermission = permissions.indexOf(command) > -1;
+    const checksPassed = _.reduce(_.map(checks, c => c(message), (a, b) => a && b));
+    if(hasPermission && checksPassed) {
+      handler(message, permissions);
     }
   }
 };
 
+//TODO: this lol
 /*exports.presenceUpdate = async function(oldUser, newUser) {
   //I need a refactor. Might not be necessary even!
   if(oldUser.presence.status !== 'offline' || newUser.presence.status !== 'online')
