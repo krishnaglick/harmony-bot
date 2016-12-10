@@ -7,6 +7,8 @@ exports.handler = async function(message) {
   const channelRegexResult = channelRegex.exec(messageContent);
   if(channelRegexResult) {
     const [ targetChannelText, targetChannel ] = channelRegexResult;
+    if(process.env.NODE_ENV !== 'production' && targetChannel !== 'bot-testing')
+      return;
     const channel = message.guild.channels.find(c => c.name === targetChannel);
     if(channel)
       return channel.sendMessage(messageContent.replace(targetChannelText, ''));
