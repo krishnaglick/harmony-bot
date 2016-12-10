@@ -21,20 +21,23 @@ exports.message = async function(message) {
 
   const permissions = await require('./permissions')(message);
   const messageHandlerPaths = _.map(await globby('./app/messageHandlers/*.js'), p => path.resolve(p));
-  _.forEach(messageHandlerPaths, async (handlerPath) => {
+  const sortedHandlerPaths = _.sortBy(messageHandlerPaths, (path) => {
+    return ~path.indexOf('help');
+  });
+  for(let i = 0; i < sortedHandlerPaths.length - 1; i++) {
     try {
-      const handlerName = handlerPath.split(path.sep).slice(-1)[0].split('.')[0];
-      const { handler, checks } = require(handlerPath);
+      const handlerName = sortedHandlerPaths[i].split(path.sep).slice(-1)[0].split('.')[0];
+      const { handler, checks } = require(sortedHandlerPaths[i]);
       const hasPermission = permissions.indexOf(handlerName) > -1;
       const checksPassed = _.reduce(_.map(checks, c => c(message), (a, b) => a && b));
       if(hasPermission && checksPassed) {
-        await handler(message, permissions);
+        return await handler(message, permissions);
       }
     }
     catch(x) {
       console.error(x);
     }
-  });
+  }
 };
 
 /*exports.presenceUpdate = async function(oldUser, newUser) {

@@ -8,19 +8,18 @@ mongoose.Promise = require('bluebird');
   catch(x) {
     console.error(`Mongoose can't connect`);
   }
+  let clientSecret;
+  try {
+    clientSecret = require('./config').clientSecret;
+  }
+  catch(x) {
+    clientSecret = process.env.CLIENT_SECRET;
+  }
+  if(!clientSecret)
+    throw 'You need a client secret!';
+
+  const harmonyBot = require('./app/harmony-bot');
+  const client = new harmonyBot(clientSecret, mongoose);
+  client.start();
 })();
-
-let clientSecret;
-try {
-  clientSecret = require('./config').clientSecret;
-}
-catch(x) {
-  clientSecret = process.env.CLIENT_SECRET;
-}
-if(!clientSecret)
-  throw 'You need a client secret!';
-
-const harmonyBot = require('./app/harmony-bot');
-let client = new harmonyBot(clientSecret, mongoose);
-client.start();
 

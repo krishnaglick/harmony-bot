@@ -38,3 +38,5 @@ exports.checks = [
 ];
 
 exports.requirements = [];
+
+exports.helpMessage = 'Using this command makes me search my copperminds for the required information.';
