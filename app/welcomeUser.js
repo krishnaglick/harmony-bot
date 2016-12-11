@@ -9,7 +9,10 @@ const welcomeMessages = [
   'Welcome <@id>. I hope the Survivor looks out for your future welfare.',
   'Welcome <@id>. May Ironeys never catch sight of thee.',
   'Welcome <@id>. May the Shaod never come for you.',
-  'Welcome <@id>. May Domi guide you.'
+  'Welcome <@id>. May Domi guide you.',
+  'Welcome <@id>. The Ascendant Warrior fights beside you.',
+  'Welcome <@id>. Wayne\'s already taken your hat.',
+  'Welcome <@id>. Awespren surround you.'
 ];
 
 module.exports = async function(discordUser)  {
