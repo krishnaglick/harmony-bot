@@ -7,7 +7,7 @@ const snowflakes = {
 const welcomeMessages = [
   'Welcome <@id>. May the Stormfather watch over you.',
   'Welcome <@id>. I hope the Survivor looks out for your future welfare.',
-  'Welcome <@id>. May Ironeys never catch sight of thee.',
+  'Welcome <@id>. May Ironeyes never catch sight of thee.',
   'Welcome <@id>. May the Shaod never come for you.',
   'Welcome <@id>. May Domi guide you.',
   'Welcome <@id>. The Ascendant Warrior fights beside you.',
