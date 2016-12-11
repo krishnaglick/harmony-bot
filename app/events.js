@@ -21,7 +21,12 @@ exports.message = async function(message) {
 
   const permissions = await require('./permissions')(message);
   const handlerPaths = _.map(await globby('./app/messageHandlers/*.js'), p => path.resolve(p));
-  const command = message.content.split(' ')[0].split('!')[1];
+  console.log(message.content.split(' '), permissions);
+  const [ command ] = _.filter(message.content.split(' '), (word) => {
+    return permissions.indexOf(word.split('!')[1]) > -1 && word[0] === '!' ?
+      word :
+      null;
+  });
   const [ handlerPath ] = _.filter(handlerPaths, p => p.indexOf(command) > -1);
   if(handlerPath) {
     const { handler, checks } = require(handlerPath);

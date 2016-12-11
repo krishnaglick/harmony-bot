@@ -19,7 +19,7 @@ module.exports = async function(discordUser)  {
   const { user: { id, username } } = discordUser;
   const message = snowflakes[username] ?
     snowflakes[username] :
-    welcomeMessages[Math.floor(Math.random() * welcomeMessages.length) ];
+    welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
   try {
     let channel;
     if(process.env.NODE_ENV !== 'production')
