@@ -4,6 +4,8 @@ services:
     image: mongo:latest
     ports:
       - "27017:27017"
+    volumes:
+      - /opt/mongodb:/data/db
   harmony:
     working_dir: /harmony-bot
     build:
