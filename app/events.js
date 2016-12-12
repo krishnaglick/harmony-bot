@@ -47,7 +47,7 @@ exports.presenceUpdate = async function(oldUser, newUser) {
     const user = await (this.user.findOne({ id }).exec());
     if(!user) {
       require('./welcomeUser')(newUser);
-      await (this.user.create({id, username}));
+      await (this.user.create({id, username}).exec());
     }
   }
   catch(x) {

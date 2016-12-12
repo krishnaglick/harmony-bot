@@ -8,11 +8,16 @@ class bot {
     this.secret = secret;
     if(mongoose) {
       this.mongoose = mongoose;
-      const schema = new this.mongoose.Schema({
+      const userTrackerSchema = new this.mongoose.Schema({
         id: String,
         username: String
       });
-      this.user = this.mongoose.model('user', schema);
+      const welcomeMessageSchema = new this.mongoose.Schema({
+        username: String,
+        message: String
+      });
+      this.user = this.mongoose.model('user', userTrackerSchema);
+      this.welcomeMessage = this.mongoose.model('welcomeMessage', welcomeMessageSchema);
     }
   }
 
