@@ -25,11 +25,11 @@ exports.message = async function(message) {
     return permissions.indexOf(word.split('!')[1]) > -1 && word[0] === '!' ?
       word :
       null;
-  }).split('!')[1];
-  const [ handlerPath ] = _.filter(handlerPaths, p => p.indexOf(command) > -1);
+  });
+  const [ handlerPath ] = _.filter(handlerPaths, p => p.indexOf(command.split('!')[1]) > -1);
   if(handlerPath) {
     const { handler, checks } = require(handlerPath);
-    const hasPermission = permissions.indexOf(command) > -1;
+    const hasPermission = permissions.indexOf(command.split('!')[1]) > -1;
     const checksPassed = _.reduce(_.map(checks, c => c(message), (a, b) => a && b));
     if(hasPermission && checksPassed) {
       handler(message, permissions);
