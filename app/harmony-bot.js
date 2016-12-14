@@ -14,7 +14,7 @@ class bot {
       });
       const welcomeMessageSchema = new this.mongoose.Schema({
         username: String,
-        message: String
+        message: { type: String, index: { unique: true } }
       });
       this.user = this.mongoose.model('user', userTrackerSchema);
       this.welcomeMessage = this.mongoose.model('welcomeMessage', welcomeMessageSchema);
@@ -32,6 +32,12 @@ class bot {
     }
     catch(x) {
       console.error('Unable to login\n', x);
+    }
+    try {
+      await (require('./welcomeUser')).init(this.welcomeMessage);
+    }
+    catch(x) {
+      console.error('Error seeding database\n', x);
     }
   }
 

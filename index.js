@@ -15,7 +15,7 @@ mongoose.Promise = require('bluebird');
     await mongoose.connect(`mongodb://${mongoUrl}:27017`);
   }
   catch(x) {
-    console.error(`Mongoose can't connect`);
+    console.error(`Mongoose can't connect\n`, x);
   }
   const clientSecret = config.clientSecret || process.env.CLIENT_SECRET;
   if(!clientSecret)

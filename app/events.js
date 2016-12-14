@@ -32,7 +32,7 @@ exports.message = async function(message) {
     const hasPermission = permissions.indexOf(command.split('!')[1]) > -1;
     const checksPassed = _.reduce(_.map(checks, c => c(message), (a, b) => a && b));
     if(hasPermission && checksPassed) {
-      handler(message, permissions);
+      handler.call(this, message, permissions);
     }
   }
 };
@@ -46,8 +46,8 @@ exports.presenceUpdate = async function(oldUser, newUser) {
   try {
     const user = await (this.user.findOne({ id }).exec());
     if(!user) {
-      require('./welcomeUser')(newUser);
-      await (this.user.create({id, username}).exec());
+      await require('./welcomeUser').handlePresence(newUser, this.welcomeMessage);
+      await this.user.create({id, username});
     }
   }
   catch(x) {

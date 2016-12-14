@@ -15,11 +15,14 @@ const welcomeMessages = [
   'Welcome <@id>. Awespren surround you.'
 ];
 
-module.exports = async function(discordUser)  {
+const welcomeMsgMgr = require('./welcomeMessageManager');
+const _ = require('lodash');
+
+exports.handlePresence = async function(discordUser, welcomeMessage)  {
   const { user: { id, username } } = discordUser;
   const message = snowflakes[username] ?
-    snowflakes[username] :
-    welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+    welcomeMsgMgr.get(welcomeMessage, username) :
+    (await welcomeMsgMgr.get(welcomeMessage, '', true))[Math.floor(Math.random() * (await welcomeMsgMgr.get(welcomeMessage, '', true)).length)];
   try {
     let channel;
     if(process.env.NODE_ENV !== 'production')
@@ -33,4 +36,19 @@ module.exports = async function(discordUser)  {
   catch(x) {
     console.error(x);
   }
+};
+
+exports.init = async function(welcomeMessage) {
+  _.forEach(welcomeMessages, async (msg) => {
+    try {
+      await welcomeMsgMgr.add(welcomeMessage, '', msg);
+    }
+    catch(x) {}
+  });
+  _.forEach(Object.keys(snowflakes), async (key) => {
+    try {
+      await welcomeMsgMgr.add(welcomeMessage, key, snowflakes[key]);
+    }
+    catch(x) {}
+  });
 };
