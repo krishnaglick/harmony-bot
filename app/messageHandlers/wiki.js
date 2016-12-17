@@ -19,14 +19,18 @@ exports.handler = async function(message) {
   try {
     const urls = await bluebird.map(wikis, async (wiki) => {
       const wikiPage = await wiki.findPage(searchTerm);
-      console.log(wikiPage);
-      const url = wikiPage.raw.fullurl;
-      if(!url)
+      const { fullurl, touched } = wikiPage.raw;
+      if(!fullurl || !touched)
         return null;
-      return url;
+      return fullurl;
     });
 
-    message.reply(`Here are some link(s) to help you out!\n${_.filter(urls).join('\n')}`);
+    const filteredUrls = _.filter(urls);
+    const message = filteredUrls.length ?
+      `Here are some link(s) to help you out!\n${_.filter(urls).join('\n')}` :
+      `I couldn't find anything in my copperminds on that subject.`;
+
+    message.reply(message);
   }
   catch(x) {
     console.error(x);

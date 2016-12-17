@@ -34,7 +34,7 @@ class bot {
       console.error('Unable to login\n', x);
     }
     try {
-      await (require('./welcomeUser')).init(this.welcomeMessage);
+      await (require('./helpers/welcomeUser')).seed(this.welcomeMessage);
     }
     catch(x) {
       console.error('Error seeding database\n', x);

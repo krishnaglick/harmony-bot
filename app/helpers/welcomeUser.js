@@ -15,14 +15,16 @@ const welcomeMessages = [
   'Welcome <@id>. Awespren surround you.'
 ];
 
-const welcomeMsgMgr = require('./welcomeMessageManager');
+const messageManager = require('./messageManager');
 const _ = require('lodash');
 
-exports.handlePresence = async function(discordUser, welcomeMessage)  {
+exports.handlePresence = async function(discordUser, db)  {
   const { user: { id, username } } = discordUser;
-  const message = snowflakes[username] ?
-    welcomeMsgMgr.get(welcomeMessage, username) :
-    (await welcomeMsgMgr.get(welcomeMessage, '', true))[Math.floor(Math.random() * (await welcomeMsgMgr.get(welcomeMessage, '', true)).length)];
+  let messages = await messageManager.getMessages(db, username);
+  if(!messages.length)
+    messages = await messageManager.getMessages(db);
+
+  const message = messages[Math.floor(Math.random() * messages.length)];
   try {
     let channel;
     if(process.env.NODE_ENV !== 'production')
@@ -38,16 +40,16 @@ exports.handlePresence = async function(discordUser, welcomeMessage)  {
   }
 };
 
-exports.init = async function(welcomeMessage) {
+exports.seed = async function(db) {
   _.forEach(welcomeMessages, async (msg) => {
     try {
-      await welcomeMsgMgr.add(welcomeMessage, '', msg);
+      await messageManager.add(db, msg);
     }
     catch(x) {}
   });
   _.forEach(Object.keys(snowflakes), async (key) => {
     try {
-      await welcomeMsgMgr.add(welcomeMessage, key, snowflakes[key]);
+      await messageManager.add(db, `[${key}] ${snowflakes[key]}`);
     }
     catch(x) {}
   });

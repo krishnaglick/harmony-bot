@@ -26,6 +26,8 @@ exports.message = async function(message) {
       word :
       null;
   });
+  if(!command)
+    return;
   const [ handlerPath ] = _.filter(handlerPaths, p => p.indexOf(command.split('!')[1]) > -1);
   if(handlerPath) {
     const { handler, checks } = require(handlerPath);
@@ -46,7 +48,7 @@ exports.presenceUpdate = async function(oldUser, newUser) {
   try {
     const user = await (this.user.findOne({ id }).exec());
     if(!user) {
-      await require('./welcomeUser').handlePresence(newUser, this.welcomeMessage);
+      await require('./helpers/welcomeUser').handlePresence(newUser, this.welcomeMessage);
       await this.user.create({id, username});
     }
   }
