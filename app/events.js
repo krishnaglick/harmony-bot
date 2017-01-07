@@ -37,7 +37,7 @@ exports.message = async function(message) {
   }
 };
 
-exports.presenceUpdate = async function(oldUser, newUser) {
+/*exports.presenceUpdate = async function(oldUser, newUser) {
   if(!this.mongoose || !this.user)
     return;
   if(oldUser.presence.status !== 'offline' || newUser.presence.status !== 'online')
@@ -53,4 +53,4 @@ exports.presenceUpdate = async function(oldUser, newUser) {
   catch(x) {
     console.error(x);
   }
-};
+};*/
